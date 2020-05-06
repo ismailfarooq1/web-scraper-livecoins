@@ -10,18 +10,16 @@ class CoinSpider(scrapy.Spider):
 
     script = '''
         function main(splash, args)
-        splash.private_mode_enabled = false
-        url = args.url
-        assert(splash:go(url))
-        assert(splash:wait(1))
-        
-        usd_tab = assert(splash:select_all(".filterPanelItem___2z5Gb"))
-        usd_tab[3]:mouse_click()
-        assert(splash:wait(1))
-        splash:set_viewport_full()
-        return {
-            splash:html()
-        }
+            splash.private_mode_enabled = false
+            url = args.url
+            assert(splash:go(url))
+            assert(splash:wait(1))
+
+            usd_tab = assert(splash:select_all(".filterPanelItem___2z5Gb"))
+            usd_tab[3]:mouse_click()
+            assert(splash:wait(1))
+            splash:set_viewport_full()
+            return splash:html()
         end
     '''
 
@@ -35,11 +33,14 @@ class CoinSpider(scrapy.Spider):
     def parse(self, response):
 
         for row in response.xpath("//div[contains(@class, 'ReactVirtualized__Table__row tableRow___3EtiS')]"):
-            print("\nHELLO\n")
-            # name = row.xpath(".//div[@class='ReactVirtualized__Table__rowColumn tableRowColumn___rDsl0']/div/text()").get()
-
             yield {
-                'name': row.xpath(".//div[@class='ReactVirtualized__Table__rowColumn tableRowColumn___rDsl0']/div/text()").get(),
-                # 'volume(24h)': row.xpath(".//").get()
+                'name': row.xpath(".//div[1]/div/text()").get(),
+                'volume(24h)': row.xpath(".//div[2]/span/text()").get()
             }
+
+        # btn = response.xpath("//button[@class='button-red']")
+        
+        # if btn:
+        #     print("HELLO")
+            
 
